@@ -4,9 +4,23 @@ from item.models import Category, Item
 
 from .forms import SignupForm
 
+from PIL import Image
+
+import os
+
 def index(request):
     items = Item.objects.filter(is_sold=False)[0:6]
     categories = Category.objects.all()
+    
+    for item in items:
+        
+        path = os.getcwd() + item.image.url
+        with Image.open(path) as img:
+            # Resize the image to the desired dimensions
+            resized_img = img.resize((5536, 4160))
+
+            # Overwrite the original image with the resized image
+            resized_img.save(path)
 
     return render(request, 'core/index.html', {
         'categories': categories,
